@@ -146,6 +146,15 @@
   //cookie_kiroku:example
   //mode0num20keta2keta2
 
+//zoom cancel
+document.addEventListener('touchstart', function(event) {
+	    if (event.touches.length > 1) {
+	        event.preventDefault();
+	    }
+}, { passive: false });
+document.addEventListener("dblclick", function(e){
+	e.preventDefault();}, { passive: false });
+
 //cookie
 const cookies = document.cookie;
 const array = cookies.split(';');
