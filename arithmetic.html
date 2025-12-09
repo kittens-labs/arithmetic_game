@@ -367,7 +367,7 @@ $(document).ready(function() {
 				result_time  = (endTime-startTime)/1000;
 				$($('#iframe').contents().find('#time')).append(result_time+" sec");
 				result_time = result_time+(fail_cnt*5);
-				result_time  = result_time.toFixed(2);
+				result_time  = result_time.toFixed(3);
 				$($('#iframe').contents().find('#score_time')).append(result_time+" sec");
 				best_time = getCookie('mode'+_mode+'num'+_num+'keta'+_keta+'keta2'+_keta2);
 				cookie_max_age=7776000; //90days
@@ -385,15 +385,31 @@ $(document).ready(function() {
 					setCookie('mode'+_mode+'num'+_num+'keta'+_keta+'keta2'+_keta2, result_time+'; max-age='+cookie_max_age+';');
 				}
 
+				data = result_time.split(".");
+				data = data[1].split('');
+				//alert(data[1]);
+				data_arr = [0,0,0];
+				try{
+					for(i = 0; i < data.length; i++){
+						data_arr[i] = data[i];
+					}
+				}catch(e){
+					//nothing todo
+				}
+				//alert(data_arr[0]);
 				//slot
 				$($('#iframe').contents().find('#slot')).append('<center>');
-				$($('#iframe').contents().find('#slot')).append('<img width="60" src="./'+getRandomInt(10)+'.jpg">');
-				$($('#iframe').contents().find('#slot')).append('<img width="60" src="./'+getRandomInt(10)+'.jpg">');
-				$($('#iframe').contents().find('#slot')).append('<img width="60" src="./'+getRandomInt(10)+'.jpg">');
+				$($('#iframe').contents().find('#slot')).append(getImg(data_arr[0]));
+				$($('#iframe').contents().find('#slot')).append(getImg(data_arr[1]));
+				$($('#iframe').contents().find('#slot')).append(getImg(data_arr[2]));
 				$($('#iframe').contents().find('#slot')).append('</center>');
 
 				//scroll
 				scroll_iframe('result');
+			}
+
+			function getImg(number){
+				return '<img width="60" src="./'+number+'.jpg">';
 			}
 		}
 
