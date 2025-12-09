@@ -1,0 +1,26 @@
+.canvas-wrapper {
+    position: relative;
+    width: 400;
+    height: 300;
+    margin: 0 auto;
+}
+.canvas-wrapper canvas {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+
+    border: 1px solid #999999;
+    touch-action: none;
+    margin: 0 auto;
+}
+.gamebutton-wrapper {
+    margin: 0 auto;
+}
+.button-wrapper {
+    margin: 0 auto;
+}
+/*
+mark {
+  background: linear-gradient(#ffffff 80%);
+}
+*/

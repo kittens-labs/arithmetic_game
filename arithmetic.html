@@ -1,0 +1,451 @@
+<html>
+<head>
+  <title>ALICE in ARITHMETIC LAND[mode:][num:][keta:]</title>
+	<link rel="stylesheet" type="text/css" href="./resource/main.css" media="all">
+</head>
+<body bgcolor="#ffffff">
+
+<!--mobile setting  -->
+<meta name="viewport" content="width=device-width,initial-scale=0.8">
+
+<!--キャンバス　描画エリア-->
+	<div class="canvas-wrapper">
+		<center>
+    		<iframe id="iframe" src="./resource/iframe.html" frameborder="0" width="400" height="280"></iframe>
+		</center>
+	</div>
+	<!--ボタン-->
+	<center>
+  	<div id="gamebutton-wrapper">
+    	<table>
+			<td>
+				<button type="button" style="width: 75px;height: 70px;" id="_1">
+					<h1>1</h1>
+        		</button>
+			</td>
+			<td>
+				<button type="button" style="width: 75px;height: 70px;" id="_2">
+					<h1>2</h1>
+        		</button>
+			</td>
+			<td>
+				<button type="button" style="width: 75px;height: 70px;" id="_3">
+					<h1>3</h1>
+        		</button>
+			</td>
+    	<tr />
+  			<td>
+				<button type="button" style="width: 75px;height: 70px;" id="_4">
+					<h1>4</h1>
+        		</button>
+			</td>
+  			<td>
+				<button type="button" style="width: 75px;height: 70px;" id="_5">
+					<h1>5</h1>
+        		</button>
+			</td>
+  			<td>
+				<button type="button" style="width: 75px;height: 70px;" id="_6">
+					<h1>6</h1>
+        		</button>
+			</td>
+    	<tr />
+  			<td>
+				<button type="button" style="width: 75px;height: 70px;" id="_7">
+					<h1>7</h1>
+    			</button>
+			</td>
+  			<td>
+				<button type="button" style="width: 75px;height: 70px;" id="_8">
+					<h1>8</h1>
+        		</button>
+			</td>
+  			<td>
+				<button type="button" style="width: 75px;height: 70px;" id="_9">
+					<h1>9</h1>
+       		 </button>
+			</td>
+    	<tr />
+    		<td>
+				<button type="button" style="width: 75px;height: 70px;" id="_0">
+					<h1>0</h1>
+        		</button>
+			</td>
+    		<td>
+				<button type="button" style="width: 75px;height: 70px;" id="_minus">
+					<h1>-</h1>
+        		</button>
+			</td>
+    		<td>
+				<button type="button" style="width: 75px;height: 70px;" id="_del">
+					<h1></h1>
+        		</button>
+			</td>
+		</table>
+	</div>
+	<div id="button-wrapper">
+		<table>
+			<td>
+				<button type="button" style="height: 50px;" id="retry-button" onclick="window.location.reload()">
+					<img src="./resource/retry.png" alt="RETRY" style="height: 100%;">
+				</button>
+			</td>
+			<!--
+			<td>
+				<button type="button" style="height: 50px;" id="start-button">
+					<img src="" alt="RUN" style="height: 100%;">
+				</button>
+			</td>
+			-->
+		</table>
+	</div>
+	</center>
+	<br /><br />
+<script type="text/javascript" src="./resource/jqmin.js"></script>
+<script>
+/*!
+ * arithmetic 0.1 by @kittens-labs
+ * https://kittens-labs.onrender.com
+ * License MIT
+ *
+ * The MIT License (MIT)
+ *
+ * Copyright (c) kittens-labs
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ */
+  //game mode: &mode=
+  //0:+
+  //1:-
+  //2:*
+  //3:/
+  //4:+-
+  //5:*/
+  //6:+-*/
+  //問題数: &num=
+  //20
+  //100
+  //問題の桁数: １項目　&keta=
+  // 			2項目　&keta2=
+  //cookie_kiroku:example
+  //mode0num20keta2keta2
+
+//cookie
+const cookies = document.cookie;
+const array = cookies.split(';');
+let start_flg=false;
+function getCookie(key){
+	let ret;
+	array.forEach(function(value){
+						const content = value.split('=');
+						if(content[0].trim() == key){
+							ret = content[1].trim();
+							try{
+								if(isNaN(ret)){
+									throw new Error('number format error.');
+								}
+							}catch(e){
+								ret = undefined;
+							}
+							return ret;
+						}
+	})
+	return ret;
+}
+function setCookie(key, value){
+	document.cookie = key+'='+value;
+}
+
+//url param
+const urlParams = new URLSearchParams(window.location.search);
+const mode = urlParams.get('mode');
+const num  = urlParams.get('num');
+const keta = urlParams.get('keta');
+const keta2 = urlParams.get('keta2');
+try{
+	_mode = parseInt(mode);
+	_num  = parseInt(num);
+	_keta = parseInt(keta);
+	_keta2 = parseInt(keta2);
+	if(isNaN(_mode) || isNaN(_num) || isNaN(_keta) || isNaN(_keta2)){
+		throw new Error('number format error.');
+	}
+}catch(e){
+	_mode = 0;
+	_num = 20;
+	_keta = 2;
+	_keta2 = 1;
+}
+
+$(document).ready(function() {
+	ansCommand = [];
+	kotaeAwase_num = 0;
+    $(window).on('load',function(){
+		mondai = [];
+		function getRandomInt(max) {
+  			return Math.floor(Math.random() * max);
+		}
+		function genMondai(mode,num,keta){
+			for(i = 0; i < num; i++){
+				if(mode == 0){
+					_arith = "+";
+				}else if(mode == 1){
+					_arith = "-";
+				}else if(mode == 2){
+					_arith = "*";
+				}else if(mode == 3){
+					_arith = "/";
+				}else if(mode == 4){
+					ret = getRandomInt(2);
+					if(ret == 0){
+						_arith = "+";
+					}else{
+						_arith = "-";
+					}
+				}else if(mode == 5){
+					ret = getRandomInt(2);
+					if(ret == 0){
+						_arith = "*";
+					}else{
+						_arith = "/";
+					}
+				}else if(mode == 6){
+					ret = getRandomInt(4);
+					if(ret == 0){
+						_arith = "*";
+					}else if(ret == 1){
+						_arith = "/";
+					}else if(ret == 2){
+						_arith = "+";
+					}else if(ret == 3){
+						_arith = "-";
+					}
+				}
+				rand_max1 = 9;
+				for(j = 1; j < keta; j++){
+					rand_max1 = rand_max1 + rand_max1*10;
+				}
+				rand_max2 = 9;
+				for(j = 1; j < keta2; j++){
+					rand_max2 = rand_max2 + rand_max2*10;
+				}
+				//x
+				_x = getRandomInt(rand_max1)+1;
+				//y
+				_y = getRandomInt(rand_max2)+1;
+				// for / : 割り算の場合は割り切れる問題にする
+				if(_arith == "/" && _x % _y != 0){
+					while(_x % _y != 0 || _y == 1){
+						_x = getRandomInt(rand_max1)+1;
+						_y = getRandomInt(rand_max2)+1;
+					}
+				}
+				//ans
+				switch (_arith) {
+		      		case '+':
+						_ans = _x + _y;
+						break;
+					case '-':
+						_ans = _x - _y;
+						break;
+					case '*':
+						_ans = _x * _y;
+						break;
+					case '/':
+						_ans = _x / _y;
+						break;
+					default:
+						_ans = 0;
+				}
+				mondai.push({x:_x, arith:_arith, y:_y, ans:_ans});
+			}
+			//問題　write
+			for(i = 0; i < mondai.length; i++){
+					let targetTag = "#m"+(i+1);
+					let mondaibun = mondai[i].x+''+mondai[i].arith+''+mondai[i].y+'=';
+					//問題追加
+					$($('#iframe').contents().find(targetTag)).append(mondaibun);
+					//答え追加
+					//$($('#iframe').contents().find(targetTag)).append("?");
+					//$($('#iframe').contents().find(targetTag)).append(mondai[i].ans);
+			}
+		}
+		genMondai(_mode,_num,_keta);
+
+		function genAns(){
+			for(i = 0; i < mondai.length; i++){
+				str_ans = String(mondai[i].ans)
+				for(j = 0; j < str_ans.length; j++){
+					ansCommand.push(str_ans[j]);
+				}
+				ansCommand.push("jump"+(i+2));
+			}
+		}
+		genAns();
+
+		scroll_iframe = function(jump){
+					let targetTag = "#"+jump;
+					let target = $($('#iframe').contents().find(targetTag)).offset().top;
+					$('#iframe').contents().find('html, body').animate({
+						scrollTop: target
+					}, 100);
+		}
+
+		mondai_num = 1;
+		success_cnt = 0;
+		fail_cnt = 0;
+		let startTime;
+		let endTime;
+		function kotaeAwase(clickValue){
+			if(start_flg == false){
+				return;
+			}
+			if(kotaeAwase_num >= ansCommand.length){
+				return;
+			}
+			//ユーザ解答追記
+			monTag = "#m"+mondai_num;
+			$($('#iframe').contents().find(monTag)).append(clickValue);
+
+			//一致
+			if(clickValue == ansCommand[kotaeAwase_num]){
+				//ok
+				kotaeAwase_num = kotaeAwase_num+1;
+				let targetTag = "#m"+mondai_num;
+				if(String(String(ansCommand[kotaeAwase_num])).startsWith("jump")){
+					success_cnt+=1;
+					$($('#iframe').contents().find(targetTag)).attr('style','background-color: #009900;');
+				}
+			}else{
+				//ng
+				fail_cnt++;
+				while(!ansCommand[kotaeAwase_num].startsWith("jump")){
+					kotaeAwase_num = kotaeAwase_num+1;
+				}
+				let targetTag = "#m"+mondai_num;
+				//ok pattern
+				$($('#iframe').contents().find(targetTag)).attr('style','background-color: #990000;');
+			}
+			//scroll
+			if(String(String(ansCommand[kotaeAwase_num])).startsWith("jump")){
+				scroll_iframe(ansCommand[kotaeAwase_num]);
+				kotaeAwase_num+=1;
+				mondai_num+=1;
+			}
+			//最後の回答の場合は結果位置にスクロール
+			if(kotaeAwase_num >= ansCommand.length-1){
+				endTime = Date.now();
+
+				//result
+				$($('#iframe').contents().find('#success')).append(success_cnt);
+				$($('#iframe').contents().find('#fail')).append(fail_cnt);
+				result_time  = (endTime-startTime)/1000;
+				$($('#iframe').contents().find('#time')).append(result_time+" sec");
+				result_time = result_time+(fail_cnt*5);
+				result_time  = result_time.toFixed(2);
+				$($('#iframe').contents().find('#score_time')).append(result_time+" sec");
+				best_time = getCookie('mode'+_mode+'num'+_num+'keta'+_keta+'keta2'+_keta2);
+				cookie_max_age=7776000; //90days
+				if(best_time !== undefined){
+					$($('#iframe').contents().find('#best_time')).append("BEST RECORD:"+best_time+" sec");
+					value = best_time - result_time;
+					if(value > 0){
+						//new record
+						setCookie('mode'+_mode+'num'+_num+'keta'+_keta+'keta2'+_keta2, result_time+'; max-age='+cookie_max_age+';');
+						$($('#iframe').contents().find('#score_time')).append(' <font color="#ff0000">NEW!</font>');
+					}
+				}
+
+				if(best_time === undefined){
+					setCookie('mode'+_mode+'num'+_num+'keta'+_keta+'keta2'+_keta2, result_time+'; max-age='+cookie_max_age+';');
+				}
+
+				//slot
+				$($('#iframe').contents().find('#slot')).append('<center>');
+				$($('#iframe').contents().find('#slot')).append('<img width="60" src="./'+getRandomInt(10)+'.jpg">');
+				$($('#iframe').contents().find('#slot')).append('<img width="60" src="./'+getRandomInt(10)+'.jpg">');
+				$($('#iframe').contents().find('#slot')).append('<img width="60" src="./'+getRandomInt(10)+'.jpg">');
+				$($('#iframe').contents().find('#slot')).append('</center>');
+
+				//scroll
+				scroll_iframe('result');
+			}
+		}
+
+		//timer
+		timer_cnt = 3;
+		const count_timer = setInterval(function(){
+			$($('#iframe').contents().find('#count')).empty();
+			$($('#iframe').contents().find('#count')).append(timer_cnt);
+			timer_cnt-=1;
+			if(timer_cnt < 0){
+				start_flg = true;
+				clearInterval(count_timer);
+				$($('#iframe').contents().find('#count')).empty();
+				$($('#iframe').contents().find('#count')).append('START');
+				scroll_iframe('jump1');
+				startTime = Date.now();
+			}
+		},1000);
+
+		//event listener
+		$('#_1').on('click',function(){
+			kotaeAwase(1);
+		});
+		$('#_2').on('click',function(){
+			kotaeAwase(2);
+		});
+		$('#_3').on('click',function(){
+			kotaeAwase(3);
+		});
+		$('#_4').on('click',function(){
+			kotaeAwase(4);
+		});
+		$('#_5').on('click',function(){
+			kotaeAwase(5);
+		});
+		$('#_6').on('click',function(){
+			kotaeAwase(6);
+		});
+		$('#_7').on('click',function(){
+			kotaeAwase(7);
+		});
+		$('#_8').on('click',function(){
+			kotaeAwase(8);
+		});
+		$('#_9').on('click',function(){
+			kotaeAwase(9);
+		});
+		$('#_0').on('click',function(){
+			kotaeAwase(0);
+		});
+		$('#_minus').on('click',function(){
+			kotaeAwase('-');
+		});
+	});
+});
+
+//jsはhtmlに記述して、この外部よみこみをしないと、iframeが真っ白になるバグ
+let scriptSrc = './resource/arithmetic.js';
+const script = document.createElement('script');
+script.src = scriptSrc;
+document.body.appendChild(script);
+</script>
+</body>
+</html>

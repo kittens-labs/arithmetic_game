@@ -1,0 +1,28 @@
+<html>
+<body>
+
+<script>
+	function isJP(){
+		const navi = navigator;
+		if(navigator === undefined || navigator === null){
+			alert("naviなし")
+			return true;
+		}
+		const language = navigator.language;
+		alert("ブラウザの言語:"+language);
+		if(language == "ja" || language == "ja-JP"){
+			alert("日本語処理");
+			return true;
+		}else{
+			return false;
+		}
+
+		//const languages = navigator.languages;
+		//alert("ブラウザの言語リスト:"+languages);
+	}
+	isJP();
+</script>
+
+
+</body>
+</html>

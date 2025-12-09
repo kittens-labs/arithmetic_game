@@ -1,0 +1,30 @@
+<html>
+<head>
+    <script>
+        function startConvert(){
+            element = document.getElementById('from');
+
+            element2 = document.getElementById('to');
+
+            str = element.value;
+            str = str.replaceAll("\n",""); 
+            str = str.replaceAll("\r\n",""); 
+            str = str.replaceAll("\t",""); 
+            //str = str.replaceAll(" ",""); 
+            element2.value = str;
+        }
+
+    </script>
+</head>
+<body>
+    <h1>JavaScript 難読化ツール</h1>
+<textarea id="from" cols="50" rows="10">
+
+</textarea>
+<button id="convert" onclick="javaScript:startConvert()">CONVERT</button>
+<textarea id="to" cols="50" rows="10">
+
+</textarea>
+
+</body>    
+</html>
