@@ -258,6 +258,13 @@ $(document).ready(function() {
 				_x = getRandomInt(rand_max1)+1;
 				//y
 				_y = getRandomInt(rand_max2)+1;
+				if(_arith == "/" || _arith == "*"){
+					if(_y == 1){
+						while(_y == 1){
+							_y = getRandomInt(rand_max2)+1;
+						}
+					}
+				}
 				// for / : 割り算の場合は割り切れる問題にする
 				if(_arith == "/" && _x % _y != 0){
 					while(_x % _y != 0 || _y == 1){
@@ -303,7 +310,7 @@ $(document).ready(function() {
 				for(j = 0; j < str_ans.length; j++){
 					ansCommand.push(str_ans[j]);
 				}
-				ansCommand.push("jump"+(i+2));
+				ansCommand.push("jump"+(i+1));
 			}
 		}
 		genAns();
@@ -424,7 +431,7 @@ $(document).ready(function() {
 				clearInterval(count_timer);
 				$($('#iframe').contents().find('#count')).empty();
 				$($('#iframe').contents().find('#count')).append('START');
-				scroll_iframe('jump1');
+				scroll_iframe('jump0');
 				startTime = Date.now();
 			}
 		},1000);
