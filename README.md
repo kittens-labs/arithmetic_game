@@ -1,5 +1,8 @@
 MIT LICENSE
 
+A game where you race against the clock to perform arithmetic operations.<br />
+Compatible with PCs, smartphones, and tablets.
+
 usage:<br />
 Deploy the folder to the web server.<br />
 It will not function unless it is on the web server.<br />
